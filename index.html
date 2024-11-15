@@ -99,11 +99,12 @@
       </div>
     </div>
   </div>
-<script>
+  <script>
+    // Function to initialize and handle Google Sign-In
     function handleGoogleSignIn() {
       // Initialize Google Sign-In
       google.accounts.id.initialize({
-        client_id: "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com",
+        client_id: "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com", // Replace with your client ID
         callback: handleCredentialResponse
       });
   
@@ -111,33 +112,37 @@
       google.accounts.id.prompt();
     }
   
+    // Function to handle the response from Google Sign-In
     function handleCredentialResponse(response) {
-      // Check for a valid ID token
-      if (response.credential) {
-        console.log("Encoded JWT ID token: " + response.credential);
-        
-        // Send the token to your server for further processing
-        fetch('/auth/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id_token: response.credential })
-        })
-        .then(response => {
-          if (response.ok) {
-            window.location.href = '/dashboard'; // Redirect upon successful login
-          } else {
-            alert('Google sign-in failed');
-          }
-        })
-        .catch(error => {
-          console.error("Google sign-in error:", error);
-          alert('There was an error with Google sign-in');
-        });
+  if (response.credential) {
+    console.log("Encoded JWT ID token: " + response.credential);
+
+    // Send the token to your server
+    fetch('/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_token: response.credential })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Redirect to feedback-form with email passed as a query parameter
+        const email = encodeURIComponent(data.email);
+        window.location.href = `/feedback-form?email=${email}`;
       } else {
-        console.error("Google sign-in response missing credential");
-        alert("Sign-in failed. Please try again.");
+        alert('Google sign-in failed');
       }
-    }
+    })
+    .catch(error => {
+      console.error("Google sign-in error:", error);
+      alert('There was an error with Google sign-in');
+    });
+  } else {
+    console.error("Google sign-in response missing credential");
+    alert("Sign-in failed. Please try again.");
+  }
+}
+
   </script>
   
   
