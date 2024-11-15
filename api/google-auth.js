@@ -24,10 +24,12 @@ export default async function handler(req, res) {
       const payload = ticket.getPayload();
       const email = payload.email; // Extract the email address
 
+      console.log('Payload verified successfully:', payload);
+
       // Respond with success and the user's email
-      res.status(200).json({ success: true, email });
+      res.status(200).json({ success: true, email, redirectUrl: '/feedback.html' });
     } catch (error) {
-      console.error("Token verification failed:", error);
+      console.error("Token verification failed:", error.message, error.stack);
       res.status(401).json({ success: false, error: 'Invalid token' });
     }
   } else {
