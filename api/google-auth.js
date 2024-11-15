@@ -5,8 +5,13 @@ const CLIENT_ID = "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleuser
 const client = new OAuth2Client(CLIENT_ID);
 
 export default async function handler(req, res) {
+  // Check if the method is POST
   if (req.method === 'POST') {
     const { id_token } = req.body;
+
+    if (!id_token) {
+      return res.status(400).json({ success: false, error: 'ID token is required' });
+    }
 
     try {
       // Verify the ID token with Google's OAuth2Client
@@ -15,6 +20,7 @@ export default async function handler(req, res) {
         audience: CLIENT_ID, // Specify the CLIENT_ID to verify audience
       });
 
+      // Get the payload from the verified ID token
       const payload = ticket.getPayload();
       const email = payload.email; // Extract the email address
 
@@ -27,6 +33,6 @@ export default async function handler(req, res) {
   } else {
     // If the request is not a POST method, reject it
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    res.status(405).json({ success: false, error: `Method ${req.method} Not Allowed` });
   }
 }
