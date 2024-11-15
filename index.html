@@ -99,12 +99,11 @@
       </div>
     </div>
   </div>
-  <script>
-    // Function to initialize and handle Google Sign-In
+<script>
     function handleGoogleSignIn() {
       // Initialize Google Sign-In
       google.accounts.id.initialize({
-        client_id: "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com", // Replace with your client ID
+        client_id: "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com",
         callback: handleCredentialResponse
       });
   
@@ -112,13 +111,12 @@
       google.accounts.id.prompt();
     }
   
-    // Function to handle the response from Google Sign-In
     function handleCredentialResponse(response) {
-      // Check if the credential (ID token) is present in the response
+      // Check for a valid ID token
       if (response.credential) {
         console.log("Encoded JWT ID token: " + response.credential);
-  
-        // Send the ID token to the server for verification
+        
+        // Send the token to your server for further processing
         fetch('/auth/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -126,19 +124,17 @@
         })
         .then(response => {
           if (response.ok) {
-            // Redirect to the feedback form page upon successful authentication
-            window.location.href = '/feedback-form'; // Replace with the actual URL or route to your feedback form
+            window.location.href = '/dashboard'; // Redirect upon successful login
           } else {
-            // Show an error message if authentication fails
-            alert('Google sign-in failed. Please try again.');
+            alert('Google sign-in failed');
           }
         })
         .catch(error => {
-          console.error("Error during Google sign-in:", error);
-          alert('There was an error processing your sign-in. Please try again.');
+          console.error("Google sign-in error:", error);
+          alert('There was an error with Google sign-in');
         });
       } else {
-        console.error("Google sign-in response missing credential.");
+        console.error("Google sign-in response missing credential");
         alert("Sign-in failed. Please try again.");
       }
     }
