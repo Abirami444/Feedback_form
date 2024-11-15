@@ -128,7 +128,7 @@
       if (data.success) {
         // Redirect to feedback-form with email passed as a query parameter
         const email = encodeURIComponent(data.email);
-        window.location.href = `/feedback-form?email=${email}`;
+        window.location.href = `/feedback-form.html?email=${email}`;
       } else {
         alert('Google sign-in failed');
       }
