@@ -1,13 +1,113 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Feedback Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-  
-  <h1>Feedback Form</h1>
-  <p id="userEmail"></p>
 
-  <!-- Feedback form content here -->
+<div class="form-container">
+    <h2>Submit Feedback</h2>
+    <form id="feedbackForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="feedback" placeholder="Your Feedback" rows="4" required></textarea>
+        <button type="submit">Submit Feedback</button>
+    </form>
+    <div class="message" id="responseMessage"></div>
+</div>
+
+<script>
+document.getElementById("feedbackForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const feedback = document.getElementById("feedback").value;
+
+    const responseMessage = document.getElementById("responseMessage");
+
+    if (name && email && feedback) {
+        try {
+            const response = await fetch('/api/submit-feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    feedback: feedback,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                responseMessage.style.color = 'green';
+                responseMessage.textContent = 'Feedback submitted successfully!';
+                document.getElementById("feedbackForm").reset(); // Clear the form
+            } else {
+                responseMessage.style.color = 'red';
+                responseMessage.textContent = 'There was an error. Please try again.';
+            }
+        } catch (error) {
+            responseMessage.style.color = 'red';
+            responseMessage.textContent = 'Error submitting feedback.';
+        }
+    } else {
+        responseMessage.style.color = 'red';
+        responseMessage.textContent = 'Please fill all the fields.';
+    }
+});
+</script>
+
 </body>
 </html>
