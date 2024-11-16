@@ -17,10 +17,7 @@ export default async function handler(req, res) {
 
       // Authenticate Google API using the service account
       const auth = new google.auth.GoogleAuth({
-        credentials: {
-          ...JSON.parse(process.env.GOOGLE_SERVICE_KEY),
-          iat: Math.floor(Date.now() / 1000) - 30, // Buffer for time sync
-        },
+        credentials: JSON.parse(process.env.GOOGLE_SERVICE_KEY), // Service account key from environment variable
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
@@ -28,9 +25,8 @@ export default async function handler(req, res) {
       google.options({ auth: authClient });
 
       // Write data to Google Sheets
-      const timestamp = new Date().toISOString();
-      const values = [[email, feedback, timestamp]];
-      const range = 'Sheet1!A:C'; // Adjust this range based on your Google Sheets structure
+      const values = [[email, feedback]]; // No timestamp
+      const range = 'Sheet1!A:B'; // Adjusted range for two columns: email and feedback
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
