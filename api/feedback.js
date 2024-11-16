@@ -1,34 +1,33 @@
 import nodemailer from 'nodemailer';
 import { google } from 'googleapis';
 
+// Google Sheets API setup
 const sheets = google.sheets('v4');
-const spreadsheetId = '1LDf333IzboA9IpMHqJQvGgFXU9vVmhMVER_Ug1Ym2I4'; // Replace with your Google Sheets ID
+const spreadsheetId = '1LDf333IzboA9IpMHqJQvVmhMVER_Ug1Ym2I4'; // Replace with your Google Sheets ID
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const { email, feedback } = req.body;
 
-      // Check if both email and feedback are provided
+      // Validate input
       if (!email || !feedback) {
         return res.status(400).json({ success: false, message: 'Email and feedback are required.' });
       }
 
       // Authenticate Google API using the service account
       const auth = new google.auth.GoogleAuth({
-        keyFile: './service-account-key.json', // Path to your service account JSON key file
+        credentials: JSON.parse(process.env.GOOGLE_SERVICE_KEY), // Service account key from environment variable
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
       const authClient = await auth.getClient();
       google.options({ auth: authClient });
 
-      // Prepare the data to write to Google Sheets
+      // Write data to Google Sheets
       const timestamp = new Date().toISOString();
       const values = [[email, feedback, timestamp]];
-
-      // Specify the range where data will be added
-      const range = 'Sheet1!A:C'; // Adjust as per your sheet
+      const range = 'Sheet1!A:C'; // Adjust this range based on your Google Sheets structure
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
@@ -37,12 +36,12 @@ export default async function handler(req, res) {
         resource: { values },
       });
 
-      // Create Nodemailer transporter
+      // Set up Nodemailer transporter
       const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: process.env.EMAIL_USER, // Your Gmail address
-          pass: process.env.EMAIL_PASS, // Your Gmail app password
+          user: process.env.EMAIL_USER, // Gmail address
+          pass: process.env.EMAIL_PASS, // Gmail app password (App-specific password)
         },
       });
 
@@ -70,8 +69,8 @@ export default async function handler(req, res) {
       res.status(200).json({ success: true, message: 'Feedback submitted successfully.' });
 
     } catch (error) {
-      console.error('Error processing feedback:', error);
-      res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' });
+      console.error('Error processing feedback:', error.message);
+      res.status(500).json({ success: false, message: `Internal Server Error: ${error.message}` });
     }
   } else {
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
