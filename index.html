@@ -1,104 +1,186 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
+    /* Tailwind Directives */
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
 
-    /* Background animation for the login button */
-    @keyframes backgroundPulse {
-      0%, 100% {
-        background-color: #0284c7; /* light blue */
+    /* Dark background and glowing effect */
+    :root {
+      --primary-color: #bb86fc; /* Soft dark purple for hover effect */
+      --dark-bg: #121212; /* Dark background */
+      --button-bg: #333333; /* Dark button color */
+      --box-bg: #1f1f1f; /* Darker color for the center box */
+      --glow-color: rgba(187, 134, 252, 0.7); /* Glowing purple effect */
+    }
+
+    /* Falling effect for elements */
+    @keyframes fall {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
       }
+
       50% {
-        background-color: #0369a1; /* darker blue */
+        transform: translateY(10px);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
       }
     }
 
-    /* Apply animation to button */
-    .animated-login-btn {
-      animation: backgroundPulse 2s infinite;
+    /* Falling particle effect */
+    @keyframes particleFall {
+      0% {
+        transform: translateY(-100vh);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    /* Apply falling effect to elements */
+    .falling {
+      animation: fall 1.5s ease-in-out forwards;
+    }
+
+    /* Apply particle fall animation */
+    .falling-particle {
+      position: absolute;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: rgba(187, 134, 252, 0.8); /* Glitter color */
+      border-radius: 50%;
+      animation: particleFall 4s linear infinite;
+    }
+
+    /* Button style with glowing effect */
+    .btn-glow {
+      background-color: var(--button-bg);
+      color: white;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 100%;
+      border: 1px solid var(--primary-color);
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-glow:hover {
+      background-color: var(--primary-color);
+      transform: scale(1.05);
+    }
+
+    .btn-glow:active {
+      transform: scale(1);
+    }
+
+    /* Glowing input effect */
+    .input-glow {
+      background-color: #2d3748;
+      border: 2px solid #4a5568;
+      color: white;
+      border-radius: 10px;
+      padding: 1rem;
+      width: 100%;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .input-glow:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 10px var(--glow-color);
+      outline: none;
+    }
+
+    /* General Dark Theme */
+    .dark-theme {
+      background-color: var(--dark-bg);
+      color: white;
+    }
+
+    /* Dark Center Box */
+    .center-box {
+      background-color: var(--box-bg);
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      position: relative;
+      padding: 3rem;
+      width: 90%;
+      max-width: 600px; /* Set max width for larger screens */
+      z-index: 1;
     }
   </style>
 </head>
-<body>
-  <div class="bg-black dark:bg-gray-800 h-screen overflow-hidden flex items-center justify-center">
-    <div class="py-10">
-      <div class="rounded-lg border border-gray-700 bg-gray-800 shadow shadow-md shadow-gray-50 dark:border-gray-500 flex-col flex h-full items-center">
-        <div class="flex w-9/12 h-full flex-col justify-center gap-4 p-6">
-          <div class="inline-block border-gray-200 px-2 py-2.5 sm:px-4">
-            <form class="flex flex-col gap-1 items-center justify-center pl-0 pb-2">
-              <h1 class="mb-0 text-gray-50 text-2xl font-bold dark:text-white">Welcome Back</h1>
-              <div class="min-w-[270px]">
-                <div class="mt-2 mb-5 text-center text-xs text-gray-50 dark:text-gray-200">
-                  Don't have an account yet?
-                  <a class="text-gray-50 text-xs underline hover:text-blue-600" href="/signup">Sign up</a>
-                </div>
-                
-                <!-- Email Field with Icon -->
-                <div class="flex w-full rounded-lg mb-4">
-                  <div class="relative w-full max-w-sm">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 20" stroke-width="1.5" stroke="white" class="h-6 w-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                            </svg>
-                        </span>
-                    <input class="block w-full pl-10 pr-4 py-2.5 border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-900 border-gray-900 text-gray-50 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-white dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
-                           id="email" type="email" name="email" placeholder="email address" required="">
-                  </div>
-                </div>
-                
-                <!-- Password Field with Icon -->
-                <div class="flex w-full rounded-lg">
-                  <div class="relative w-full max-w-sm">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 26 26" stroke-width="1.5" stroke="white" class="h-6 w-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                        </svg>
-                    </span>
-                    <input class="block w-full pl-10 pr-4 py-2.5 border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-900 border-gray-900 text-gray-50 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-white dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
-                           id="password" type="password" name="password" placeholder="password" required="">
-                  </div>
-                </div>
-                
-                <br>
-                <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
-                <div class="flex flex-col gap-2 mt-4">
-                  <button type="submit"
-                          class="border transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed border-transparent bg-sky-600 animated-login-btn active:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-700 rounded-lg">
-                    <span class="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base false">
-                      Login
-                    </span>
-                  </button>
-                  
-                  <!-- Horizontal Line -->
-                  <div class="flex items-center my-4">
-                    <hr class="w-full border-gray-300">
-                    <span class="px-2 text-gray-50 dark:text-gray-200">or</span>
-                    <hr class="w-full border-gray-300">
-                  </div>
 
-                  <!-- Sign in with Google Button -->
-                  <button type="button"  onclick="handleGoogleSignIn()"
-        class="border transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed border-transparent bg-sky-600 animated-login-btn active:bg-blue-700 text-white disabled:bg-gray-300 disabled:text-gray-700 rounded-lg flex items-center justify-center gap-2 py-1 px-4">
-  <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon" class="h-5 w-5">
-  <span>Sign in with Google</span>
-</button>
-
-                </div>
-              </div>
-            </form>
-            </div>
-        </div>
-      </div>
-    </div>
+<body class="bg-gradient-to-r from-gray-800 via-gray-900 to-black min-h-screen flex items-center justify-center dark-theme">
+  <!-- Falling Particles on the page -->
+  <div class="absolute w-full h-full top-0 left-0 pointer-events-none z-10">
+    <!-- Multiple falling particles -->
+    <div class="falling-particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="falling-particle" style="left: 20%; animation-delay: 1s;"></div>
+    <div class="falling-particle" style="left: 30%; animation-delay: 1.5s;"></div>
+    <div class="falling-particle" style="left: 40%; animation-delay: 2s;"></div>
+    <div class="falling-particle" style="left: 50%; animation-delay: 0.5s;"></div>
+    <div class="falling-particle" style="left: 60%; animation-delay: 1.8s;"></div>
+    <div class="falling-particle" style="left: 70%; animation-delay: 2.5s;"></div>
+    <div class="falling-particle" style="left: 80%; animation-delay: 3s;"></div>
+    <div class="falling-particle" style="left: 90%; animation-delay: 1.2s;"></div>
   </div>
+
+  <!-- Center Box for the login form -->
+  <div class="center-box falling">
+    <div class="text-center mb-6">
+      <h1 class="text-white text-3xl font-bold">Welcome Back</h1>
+      <p class="text-gray-300 mt-2">Please log in to continue</p>
+    </div>
+    <form class="space-y-4">
+      <!-- Email Field with Falling Animation -->
+      <div class="relative falling">
+        <input type="email" id="email" name="email" placeholder="Email Address" class="input-glow" required>
+      </div>
+
+      <!-- Password Field with Falling Animation -->
+      <div class="relative falling">
+        <input type="password" id="password" name="password" placeholder="Password" class="input-glow" required>
+      </div>
+
+      <!-- Submit Button with Falling Animation and Glowing Effect -->
+      <div class="falling">
+        <button type="submit" class="btn-glow py-3 text-lg">
+          Log In
+        </button>
+      </div>
+
+      <!-- Horizontal line for Google Sign-in -->
+      <div class="my-6 flex items-center justify-center">
+        <hr class="w-1/4 border-gray-300">
+        <span class="px-2 text-gray-300">or</span>
+        <hr class="w-1/4 border-gray-300">
+      </div>
+
+      <!-- Sign in with Google Button -->
+      <div class="falling">
+        <button type="button" onclick="handleGoogleSignIn()" class="btn-glow py-3 flex items-center justify-center text-lg">
+          <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon" class="h-5 w-5 mr-2">
+          <span>Sign in with Google</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
   <script>
     // Function to initialize and handle Google Sign-In
     function handleGoogleSignIn() {
@@ -107,16 +189,16 @@
         client_id: "318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com", // Replace with your client ID
         callback: handleCredentialResponse
       });
-  
+
       // Display Google One Tap or Google account selector dialog
       google.accounts.id.prompt();
     }
-  
+
     // Function to handle the response from Google Sign-In
     function handleCredentialResponse(response) {
       if (response.credential) {
         console.log("Encoded JWT ID token: " + response.credential);
-  
+
         // Send the token to your server for verification
         fetch('/api/google', {
           method: 'POST',
@@ -128,7 +210,7 @@
           if (data.success) {
             // Assuming the server sends the user's email in the response data
             const email = encodeURIComponent(data.email);
-  
+
             // Redirect to the feedback-form.html page with the email query parameter
             window.location.href = `/feedback-form.html?email=${email}`;
           } else {
@@ -145,7 +227,6 @@
       }
     }
   </script>
-  
-  
 </body>
+
 </html>
