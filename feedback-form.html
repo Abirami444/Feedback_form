@@ -12,7 +12,7 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      background: #ffebcd; /* Light beige background */
+      background: #ffebcd;
       color: #333;
       overflow: hidden;
       position: relative;
@@ -51,7 +51,6 @@
       position: relative;
     }
 
-    /* Form styling */
     form {
       width: 100%;
     }
@@ -88,11 +87,9 @@
       background-color: #e74c3c;
     }
 
-    .form-text {
-      text-align: center;
-      font-size: 1rem;
-      color: #555;
-      margin-bottom: 10px;
+    .form-button:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
     }
 
     .thank-you-message {
@@ -103,76 +100,17 @@
       display: none;
     }
 
-    /* Falling effects */
-    .falling-leaves {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      pointer-events: none;
+    .error-message {
+      text-align: center;
+      color: #e74c3c;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: none;
     }
-
-    .falling-leaf {
-      position: absolute;
-      top: -50px;
-      animation: fall 7s infinite linear;
-      opacity: 0.8;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-50px) rotate(0deg);
-      }
-
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-      }
-    }
-
-    /* Animation */
-    .falling-leaf:nth-child(1) {
-      left: 10%;
-      animation-duration: 6s;
-      animation-delay: 1s;
-    }
-
-    .falling-leaf:nth-child(2) {
-      left: 20%;
-      animation-duration: 8s;
-      animation-delay: 3s;
-    }
-
-    .falling-leaf:nth-child(3) {
-      left: 30%;
-      animation-duration: 9s;
-      animation-delay: 0s;
-    }
-
-    .falling-leaf:nth-child(4) {
-      left: 40%;
-      animation-duration: 6s;
-      animation-delay: 4s;
-    }
-
-    .falling-leaf:nth-child(5) {
-      left: 50%;
-      animation-duration: 7s;
-      animation-delay: 2s;
-    }
-
   </style>
 </head>
 
 <body>
-
-  <!-- Falling leaves animation -->
-  <div class="falling-leaves">
-    <div class="falling-leaf">&#x1F342;</div>
-    <div class="falling-leaf">&#x1F343;</div>
-    <div class="falling-leaf">&#x1F342;</div>
-    <div class="falling-leaf">&#x1F344;</div>
-    <div class="falling-leaf">&#x1F342;</div>
-  </div>
 
   <div class="feedback-form-container">
     <h1>Restaurant Feedback</h1>
@@ -181,12 +119,27 @@
 
     <!-- Feedback Form -->
     <form id="feedback-form">
-      <input type="email" id="email-field" name="email" class="form-field" disabled />
-      <textarea id="feedback-field" name="feedback" class="form-field" placeholder="Your feedback" required></textarea>
+      <input 
+        type="email" 
+        id="email-field" 
+        name="email" 
+        class="form-field" 
+        readonly 
+        placeholder="Your email" 
+        required 
+      />
+      <textarea 
+        id="feedback-field" 
+        name="feedback" 
+        class="form-field" 
+        placeholder="Tell us about your experience (required)" 
+        required>
+      </textarea>
       <button type="submit" class="form-button">Submit Feedback</button>
     </form>
 
     <p class="thank-you-message" id="thank-you-message">Thank you for your feedback!</p>
+    <p class="error-message" id="error-message">Something went wrong. Please try again.</p>
   </div>
 
   <script>
@@ -205,10 +158,23 @@
 
       const feedbackData = {
         email: document.getElementById('email-field').value,
-        feedback: document.getElementById('feedback-field').value
+        feedback: document.getElementById('feedback-field').value.trim()
       };
 
-      // Example submission to the backend (assuming API endpoint exists)
+      // Validate input
+      if (!feedbackData.feedback) {
+        alert("Please provide your feedback.");
+        return;
+      }
+
+      const submitButton = document.querySelector('.form-button');
+      const thankYouMessage = document.getElementById('thank-you-message');
+      const errorMessage = document.getElementById('error-message');
+
+      submitButton.disabled = true; // Disable the button to prevent multiple submissions
+      errorMessage.style.display = 'none'; // Hide error message
+
+      // Submit feedback to the backend
       fetch('/api/feedback', {
         method: 'POST',
         headers: {
@@ -219,21 +185,25 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          document.getElementById('thank-you-message').style.display = 'block';
+          thankYouMessage.style.display = 'block'; // Show thank-you message
           setTimeout(() => {
             window.location.href = '/'; // Redirect to home page or another page after success
           }, 3000);
         } else {
-          alert('Something went wrong. Please try again later.');
+          errorMessage.style.display = 'block'; // Show error message
+          alert(data.message || 'Something went wrong.');
         }
       })
       .catch(error => {
         console.error('Error submitting feedback:', error);
-        alert('Error submitting feedback.');
+        errorMessage.style.display = 'block'; // Show error message
+      })
+      .finally(() => {
+        submitButton.disabled = false; // Re-enable the button
       });
     });
 
-    // Call the function to populate the email field when the page loads
+    // Populate the email field on page load
     window.onload = getQueryParams;
   </script>
 </body>

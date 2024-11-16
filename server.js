@@ -1,45 +1,79 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');  // Import CORS package
-const feedbackHandler = require('./api/feedback');  // Import the feedback handler
+const cors = require('cors');
+const feedbackHandler = require('./api/feedback'); // Feedback handler module
 
 const app = express();
 
-// Enable CORS for all origins (you can specify origins if you want to restrict it)
-app.use(cors({
-  origin: 'http://localhost:3000', // Allow only localhost:3000 (if needed)
-  methods: ['GET', 'POST'],  // Allow specific methods
-}));
+// CORS configuration to allow specific origins
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // Frontend origin
+    methods: ['GET', 'POST'], // Allow only GET and POST
+    allowedHeaders: ['Content-Type'], // Permit specific headers
+  })
+);
 
-// Middleware to parse JSON bodies
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Serve static files (e.g., your feedback form HTML and index.html)
+// Serve static files (e.g., HTML, CSS, JS)
 app.use(express.static(path.join(__dirname)));
 
-// Route to serve index.html when the user visits the root URL
+// Route: Serve the main page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));  // Serve index.html from the root
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API route to handle feedback submissions
-app.post('/api/feedback', feedbackHandler);  // Use feedbackHandler directly
-
-// Route to serve feedback form
-app.get('/feedback-form.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'feedback-form.html')); // Serve feedback form
+// Route: Serve the feedback form
+app.get('/feedback-form', (req, res) => {
+  res.sendFile(path.join(__dirname, 'feedback-form.html'));
 });
 
-// Route to handle Google Sign-In callback
-app.post('/api/google', (req, res) => {
-  // This route will handle the POST request for Google Sign-In (your google.js logic)
-  // This assumes you have implemented Google OAuth token verification in your google.js handler
-  // Include the logic for token verification (already described in your `google.js`)
-  // You can use the same `google.js` logic here, just be sure to import and call your Google verification functions
-  res.send('Google sign-in endpoint');
+// Route: Handle feedback submissions (POST-only)
+app.post('/api/feedback', feedbackHandler);
+
+// Catch-all route to handle unsupported HTTP methods for `/api/feedback`
+app.all('/api/feedback', (req, res) => {
+  res.setHeader('Allow', ['POST']); // Inform the client that only POST is allowed
+  res.status(405).json({ success: false, message: `Method ${req.method} Not Allowed` });
+});
+
+// Route: Google Sign-In callback
+app.post('/api/google', async (req, res) => {
+  try {
+    const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ success: false, message: 'No ID token provided.' });
+    }
+
+    const userInfo = await verifyGoogleToken(idToken); // Replace with your logic
+    res.status(200).json({ success: true, message: 'Google sign-in successful!', userInfo });
+  } catch (error) {
+    console.error('Error during Google sign-in:', error);
+    res.status(500).json({ success: false, message: 'Error during Google sign-in.' });
+  }
+});
+
+// Catch-all route for unmatched URLs
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Endpoint not found.' });
 });
 
 // Start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
+
+// Helper function: Verify Google token (replace with actual implementation)
+async function verifyGoogleToken(idToken) {
+  const { google } = require('googleapis');
+  const client = new google.auth.OAuth2();
+  const ticket = await client.verifyIdToken({
+    idToken,
+    audience: '318295042974-knr55l1td7v94ik52lbp6ibcjs88fbtg.apps.googleusercontent.com', // Replace with your Google OAuth Client ID
+  });
+  return ticket.getPayload();
+}
