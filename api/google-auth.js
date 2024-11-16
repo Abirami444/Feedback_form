@@ -27,9 +27,8 @@ function getAuthUrl() {
  */
 async function getTokens(code) {
   try {
-    // Get tokens from Google API using the authorization code
     const { tokens } = await oauth2Client.getToken(code);
-    
+
     // Ensure tokens are set
     if (tokens) {
       oauth2Client.setCredentials(tokens); // Set the credentials on the OAuth2 client
@@ -41,7 +40,7 @@ async function getTokens(code) {
     return tokens;
   } catch (error) {
     console.error('Error getting tokens:', error.response ? error.response.data : error.message);
-    throw error; // Re-throw the error for better handling higher up
+    throw error;
   }
 }
 
