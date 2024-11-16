@@ -29,7 +29,7 @@
       margin-top: 30px;
       color: #e74c3c;
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.8);
-      animation: glitter 1s infinite alternate;
+      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
     }
 
     h2 {
@@ -37,13 +37,13 @@
       font-size: 1.5rem;
       color: #dcdcdc;
       margin-bottom: 20px;
-      animation: glitter 1s infinite alternate;
+      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
     }
 
     p {
       text-align: center;
       color: #bbb;
-      animation: glitter 1s infinite alternate;
+      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
     }
 
     .feedback-form-container {
@@ -66,27 +66,30 @@
       width: 100%;
     }
 
+    /* Input and Textarea Fields */
     .form-field {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin: 10px 0;
       border-radius: 10px;
       border: 1px solid #34495e;
       font-size: 1rem;
       box-sizing: border-box;
-      background: #34495e;
-      color: #f2f2f2;
-      transition: border 0.3s ease;
+      background: linear-gradient(45deg, #8e44ad, #2980b9);
+      color: #fff;
+      transition: border 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .form-field:focus {
       border-color: #e74c3c;
       outline: none;
+      transform: scale(1.05);
     }
 
     .form-button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background-color: #e74c3c;
       color: white;
       font-size: 1.2rem;
@@ -109,9 +112,10 @@
     .thank-you-message {
       text-align: center;
       color: #28a745;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       margin-top: 20px;
       display: none;
+      animation: zoomIn 2s ease-out;
     }
 
     .error-message {
@@ -148,10 +152,10 @@
       position: absolute;
       font-size: 2rem;
       color: rgba(255, 255, 255, 0.8);
-      animation: fall 2s linear infinite, glitter 1.5s infinite alternate;
+      animation: fall 2s linear infinite, glitter 1.5s infinite alternate, zoomIn 3s ease-out;
       z-index: -1;
       opacity: 0;
-      animation-duration: 1s;
+      animation-duration: 2s;
       animation-timing-function: ease-in-out;
       pointer-events: none;
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.7);
@@ -170,6 +174,18 @@
       animation-delay: 1s;
     }
 
+    .falling:nth-child(4) {
+      animation-delay: 1.5s;
+    }
+
+    .falling:nth-child(5) {
+      animation-delay: 2s;
+    }
+
+    .falling:nth-child(6) {
+      animation-delay: 2.5s;
+    }
+
     /* ReCAPTCHA styling */
     .g-recaptcha {
       margin: 20px 0;
@@ -186,6 +202,17 @@
         opacity: 0;
       }
       100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes zoomIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
         opacity: 1;
       }
     }
@@ -226,7 +253,7 @@
         placeholder="Tell us about your experience (required)" 
         required>
       </textarea>
-      <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
+      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
       <button type="submit" class="form-button">Submit Feedback</button>
     </form>
 
@@ -278,6 +305,7 @@
       .then(data => {
         if (data.success) {
           thankYouMessage.style.display = 'block'; // Show thank-you message
+          thankYouMessage.classList.add('zoomIn');
           setTimeout(() => {
             window.location.href = '/'; // Redirect to home page or another page after success
           }, 3000);
