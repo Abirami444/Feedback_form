@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const { readFileSync } = require('fs');
 
-// Load credentials from the credentials.json file
+// Load credentials from environment variables or a config file
 const credentials = JSON.parse(readFileSync('./api/credentials.json', 'utf8'));
 const CLIENT_ID = credentials.web.client_id;
 const CLIENT_SECRET = credentials.web.client_secret;
@@ -37,6 +37,8 @@ async function getTokens(code) {
       throw new Error("No tokens received.");
     }
     
+    // Optionally, you can save the tokens to a database or file for later use
+    // Example: saveTokens(tokens);
     return tokens;
   } catch (error) {
     console.error('Error getting tokens:', error.response ? error.response.data : error.message);
