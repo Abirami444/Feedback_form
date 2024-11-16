@@ -1,35 +1,49 @@
-const { sendEmail } = require('./email'); // Import the Nodemailer function
+const nodemailer = require('nodemailer');
 
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { email, feedback } = req.body;
+// Feedback handler
+module.exports = async (req, res) => {
+  const { email, feedback } = req.body;
 
-    if (!email || !feedback) {
-      return res.status(400).json({ success: false, message: 'Email and feedback are required.' });
-    }
-
-    console.log('Received Feedback:', { email, feedback });
-
-    const userMessage = `Thank you for your feedback!\n\nHere’s what you submitted:\n${feedback}`;
-    const ownerMessage = `New feedback submitted:\n\nUser Email: ${email}\nFeedback: ${feedback}`;
-    const ownerEmail = 'utube2763@gmail.com'; // Owner's email address
-
-    try {
-      // Send email to the user
-      console.log('Sending confirmation email to:', email);
-      await sendEmail(email, 'Thank you for your feedback!', userMessage);
-
-      // Send email to the owner
-      console.log('Sending feedback notification to owner:', ownerEmail);
-      await sendEmail(ownerEmail, 'New Feedback Submitted', ownerMessage);
-
-      return res.status(200).json({ success: true, message: 'Feedback submitted and emails sent!' });
-    } catch (error) {
-      console.error('Error while sending email:', error);
-      return res.status(500).json({ success: false, message: 'Error submitting feedback and sending emails.' });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ success: false, message: `Method ${req.method} Not Allowed` });
+  if (!email || !feedback) {
+    return res.status(400).json({ success: false, message: 'Email and feedback are required.' });
   }
-}
+
+  // Setup Nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  // Prepare email for the owner
+  const ownerMailOptions = {
+    from: process.env.EMAIL_USER,
+    to: process.env.EMAIL_USER,  // Owner's email
+    subject: 'New Feedback Received',
+    text: `You have received new feedback from ${email}:\n\n${feedback}`,
+  };
+
+  // Prepare email for the user
+  const userMailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,  // User's email
+    subject: 'Thank You for Your Feedback',
+    text: `Dear ${email},\n\nThank you for your feedback:\n\n"${feedback}"\n\nWe appreciate your thoughts and will consider them to improve our service.`,
+  };
+
+  try {
+    // Send email to the owner
+    await transporter.sendMail(ownerMailOptions);
+
+    // Send email to the user
+    await transporter.sendMail(userMailOptions);
+
+    // Respond with success message
+    res.status(200).json({ success: true, message: 'Feedback submitted successfully.' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' });
+  }
+};

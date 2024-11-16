@@ -1,37 +1,37 @@
 const nodemailer = require('nodemailer');
 
-// Create a transporter for Nodemailer
+// Configure transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Use Gmail (you can change this to another email provider)
+  service: 'gmail', // Using Gmail as the mail service
   auth: {
-    user: process.env.EMAIL_USER, // Your Gmail address
-    pass: process.env.EMAIL_PASS, // Your Gmail app password (not your regular password)
+    user: process.env.EMAIL_USER, // Gmail address
+    pass: process.env.EMAIL_PASS, // Gmail app password (not your regular password)
   },
 });
 
 /**
- * Send an email using Nodemailer
- * @param {string} to - Recipient email address
- * @param {string} subject - Email subject
- * @param {string} text - Email body
- * @returns {Promise} - Resolves when email is sent successfully
+ * Sends an email using Nodemailer.
+ *
+ * @param {string} to - Recipient email address.
+ * @param {string} subject - Email subject.
+ * @param {string} text - Email content in plain text.
+ * @returns {Promise<void>}
  */
-async function sendEmail(to, subject, text) {
+const sendEmail = async (to, subject, text) => {
   const mailOptions = {
-    from: process.env.EMAIL_USER, // Sender email address
-    to, // Recipient email address
-    subject, // Email subject
-    text, // Email body
+    from: process.env.EMAIL_USER, // Sender email
+    to, // Recipient email
+    subject, // Subject line
+    text, // Plain text body
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: ', info.response);
-    return info;
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent to ${to}`);
   } catch (error) {
-    console.error('Error sending email: ', error);
+    console.error(`Failed to send email to ${to}:`, error);
     throw error;
   }
-}
+};
 
 module.exports = { sendEmail };
