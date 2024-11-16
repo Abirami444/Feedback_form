@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <title>Feedback Form</title>
+</head>
+<body>
+  <script>
+    // Function to get query parameters from the URL
+    function getQueryParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      if (email) {
+        document.getElementById('email-field').value = decodeURIComponent(email); // Populate the feedback form with the email
+      }
+    }
+  
+    // Call the function when the page loads
+    window.onload = getQueryParams;
+  </script>
+  
+  <!-- Example feedback form -->
+  <form id="feedback-form">
+    <label for="email">Email:</label>
+    <input type="email" id="email-field" name="email" disabled />
+    
+    <!-- Other feedback form fields -->
+    
+    <button type="submit">Submit Feedback</button>
+  </form>
+  <h1>Feedback Form</h1>
+  <p id="userEmail"></p>
+
+  <!-- Feedback form content here -->
+</body>
+</html>
