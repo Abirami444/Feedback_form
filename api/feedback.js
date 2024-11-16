@@ -4,7 +4,7 @@ const { googleAuth } = require('google-auth-library');
 
 // Set up Google Sheets API
 const sheets = google.sheets('v4');
-const spreadsheetId = 'your-google-sheet-id-here'; // Replace with your actual Google Sheets ID
+const spreadsheetId = '1LDf333IzboA9IpMHqJQvGgFXU9vVmhMVER_Ug1Ym2I4'; // Replace with your actual Google Sheets ID
 
 async function handler(req, res) {
   if (req.method === 'POST') {
@@ -19,7 +19,7 @@ async function handler(req, res) {
 
       // Authenticate Google API using the service account
       const auth = new google.auth.GoogleAuth({
-        keyFile: 'path-to-your-service-account-key.json',  // Path to your service account JSON key file
+        keyFile: './service-account-key.json',  // Path to your service account JSON key file
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
