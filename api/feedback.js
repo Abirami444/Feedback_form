@@ -1,6 +1,6 @@
-const { sendEmail } = require('./google-auth');
+const { sendEmail } = require('./google-auth'); // Assuming this is your email-sending logic
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method === 'POST') {
     const { email, feedback } = req.body;
 
@@ -25,3 +25,5 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+module.exports = handler;  // Export the handler function

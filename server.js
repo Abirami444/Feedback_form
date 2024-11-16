@@ -1,7 +1,12 @@
 const express = require('express');
 const path = require('path');
-const feedbackHandler = require('./api/feedback').default;  // API handler
+const cors = require('cors');  // Import CORS package
+const feedbackHandler = require('./api/feedback');  // Import the feedback handler
+
 const app = express();
+
+// Enable CORS for all origins (can be customized for specific origins)
+app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -10,11 +15,11 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // API route to handle feedback submissions
-app.post('/api/feedback', feedbackHandler);
+app.post('/api/feedback', feedbackHandler);  // Use feedbackHandler directly
 
 // Catch-all route for other requests (e.g., page requests)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'feedback-form.html'));
+  res.sendFile(path.join(__dirname,  'feedback-form.html'));
 });
 
 // Start the server

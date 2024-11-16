@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const { readFileSync } = require('fs');
 
 // Load credentials from the credentials.json file
-const credentials = JSON.parse(readFileSync('./credentials.json', 'utf8'));
+const credentials = JSON.parse(readFileSync('./api/credentials.json', 'utf8'));
 const CLIENT_ID = credentials.web.client_id;
 const CLIENT_SECRET = credentials.web.client_secret;
 const REDIRECT_URI = credentials.web.redirect_uris[0]; // Use the first redirect URI
