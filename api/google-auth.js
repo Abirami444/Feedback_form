@@ -29,10 +29,18 @@ async function getTokens(code) {
   try {
     // Get tokens from Google API using the authorization code
     const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens); // Set the credentials on the OAuth2 client
+    
+    // Ensure tokens are set
+    if (tokens) {
+      oauth2Client.setCredentials(tokens); // Set the credentials on the OAuth2 client
+      console.log("Tokens set successfully.");
+    } else {
+      throw new Error("No tokens received.");
+    }
+    
     return tokens;
   } catch (error) {
-    console.error('Error getting tokens:', error);
+    console.error('Error getting tokens:', error.response ? error.response.data : error.message);
     throw error; // Re-throw the error for better handling higher up
   }
 }
@@ -72,7 +80,7 @@ async function sendEmail(auth, to, subject, body) {
     console.log('Email sent:', result.data);
     return result.data; // Return the response from Gmail API
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending email:', error.response ? error.response.data : error.message);
     throw error; // Re-throw the error for better handling higher up
   }
 }
