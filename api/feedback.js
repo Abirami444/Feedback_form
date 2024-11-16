@@ -36,14 +36,16 @@ module.exports = async (req, res) => {
   try {
     // Send email to the owner
     await transporter.sendMail(ownerMailOptions);
+    console.log('Owner email sent successfully.');
 
     // Send email to the user
     await transporter.sendMail(userMailOptions);
+    console.log('User email sent successfully.');
 
     // Respond with success message
     res.status(200).json({ success: true, message: 'Feedback submitted successfully.' });
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending email:', error);  // Log the error for debugging
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again later.' });
   }
 };
