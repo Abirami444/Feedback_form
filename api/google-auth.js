@@ -1,62 +1,74 @@
 const { google } = require('googleapis');
-const { readFileSync } = require('fs');
-
-// Load credentials from environment variables or a config file
-const credentials = JSON.parse(readFileSync('./api/credentials.json', 'utf8'));
-const CLIENT_ID = credentials.web.client_id;
-const CLIENT_SECRET = credentials.web.client_secret;
-const REDIRECT_URI = credentials.web.redirect_uris[0]; // Use the first redirect URI
-
-// Initialize OAuth2 client
-const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 /**
- * Generate the Google Auth URL for user consent
+ * Initialize Google Auth using a Service Account key.
+ * This is typically used for server-to-server communication, like accessing Google Sheets or Drive APIs.
+ * Ensure the `GOOGLE_SERVICE_KEY` environment variable contains the JSON key file content.
  */
-function getAuthUrl() {
-  const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline', // Request a refresh token for later use
-    scope: ['https://www.googleapis.com/auth/gmail.send'], // Permission to send emails
-  });
-  return authUrl;
-}
-
-/**
- * Exchange authorization code for tokens
- * @param {string} code - Authorization code from the consent screen
- */
-async function getTokens(code) {
+function initServiceAccountAuth() {
   try {
-    const { tokens } = await oauth2Client.getToken(code);
-
-    // Ensure tokens are set
-    if (tokens) {
-      oauth2Client.setCredentials(tokens); // Set the credentials on the OAuth2 client
-      console.log("Tokens set successfully.");
-    } else {
-      throw new Error("No tokens received.");
-    }
-    
-    // Optionally, you can save the tokens to a database or file for later use
-    // Example: saveTokens(tokens);
-    return tokens;
+    const auth = new google.auth.GoogleAuth({
+      credentials: JSON.parse(process.env.GOOGLE_SERVICE_KEY),
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'], // Add scopes as needed
+    });
+    return auth.getClient(); // Returns an authenticated client for Google APIs
   } catch (error) {
-    console.error('Error getting tokens:', error.response ? error.response.data : error.message);
+    console.error('Error initializing service account auth:', error.message);
     throw error;
   }
 }
 
 /**
- * Send an email using Gmail API
- * @param {OAuth2Client} auth - Authenticated OAuth2 client
- * @param {string} to - Recipient email address
- * @param {string} subject - Email subject
- * @param {string} body - Email body
+ * Initialize Google OAuth2 client for user-based authentication.
+ * This requires user consent and tokens, typically used for user-specific actions like sending emails via Gmail.
  */
-async function sendEmail(auth, to, subject, body) {
-  const gmail = google.gmail({ version: 'v1', auth }); // Initialize Gmail API with OAuth2 client
+function initOAuth2Auth() {
+  const CLIENT_ID = process.env.CLIENT_ID || '<YOUR_CLIENT_ID>';
+  const CLIENT_SECRET = process.env.CLIENT_SECRET || '<YOUR_CLIENT_SECRET>';
+  const REDIRECT_URI = process.env.REDIRECT_URI || 'http://localhost:3000/oauth2callback';
 
-  // Construct the email content
+  return new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+}
+
+/**
+ * Generate a Google Auth URL for user consent (OAuth2 flow).
+ * Use this URL to get the user's permission for the specified scopes.
+ */
+function getAuthUrl() {
+  const oauth2Client = initOAuth2Auth();
+  return oauth2Client.generateAuthUrl({
+    access_type: 'offline', // Ensures a refresh token is provided
+    scope: ['https://www.googleapis.com/auth/gmail.send'], // Example scope for Gmail API
+  });
+}
+
+/**
+ * Exchange an authorization code for tokens in the OAuth2 flow.
+ * @param {string} code - Authorization code from the consent screen.
+ */
+async function getTokens(code) {
+  const oauth2Client = initOAuth2Auth();
+  try {
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    console.log('Tokens set successfully.');
+    return tokens; // Tokens include access and refresh tokens
+  } catch (error) {
+    console.error('Error getting tokens:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Send an email using Gmail API with OAuth2 authentication.
+ * @param {string} to - Recipient email address.
+ * @param {string} subject - Email subject.
+ * @param {string} body - Email body.
+ */
+async function sendEmail(to, subject, body) {
+  const auth = initOAuth2Auth();
+  const gmail = google.gmail({ version: 'v1', auth });
+
   const email = [
     `To: ${to}`,
     `Subject: ${subject}`,
@@ -65,29 +77,29 @@ async function sendEmail(auth, to, subject, body) {
     body,
   ].join('\n');
 
-  // Encode the email as base64 URL-safe
   const raw = Buffer.from(email)
-    .toString('base64') // Standard base64 encode
-    .replace(/\+/g, '-') // Base64 to base64url
-    .replace(/\//g, '_') // Base64 to base64url
-    .replace(/=+$/, ''); // Remove trailing equal signs
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
 
   try {
-    // Send the email via Gmail API
     const result = await gmail.users.messages.send({
-      userId: 'me', // 'me' refers to the authenticated user
+      userId: 'me',
       requestBody: { raw },
     });
     console.log('Email sent:', result.data);
-    return result.data; // Return the response from Gmail API
+    return result.data;
   } catch (error) {
-    console.error('Error sending email:', error.response ? error.response.data : error.message);
-    throw error; // Re-throw the error for better handling higher up
+    console.error('Error sending email:', error.message);
+    throw error;
   }
 }
 
 module.exports = {
-  getAuthUrl,
-  getTokens,
-  sendEmail,
+  initServiceAccountAuth, // For service account-based Google API calls (e.g., Sheets)
+  initOAuth2Auth,         // For user-based authentication (e.g., Gmail API)
+  getAuthUrl,             // Generate an OAuth2 consent URL
+  getTokens,              // Exchange authorization code for tokens
+  sendEmail,              // Send an email via Gmail API using OAuth2
 };
