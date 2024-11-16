@@ -17,7 +17,10 @@ export default async function handler(req, res) {
 
       // Authenticate Google API using the service account
       const auth = new google.auth.GoogleAuth({
-        credentials: JSON.parse(process.env.GOOGLE_SERVICE_KEY), // Service account key from environment variable
+        credentials: {
+          ...JSON.parse(process.env.GOOGLE_SERVICE_KEY),
+          iat: Math.floor(Date.now() / 1000) - 30, // Buffer for time sync
+        },
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 
