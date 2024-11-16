@@ -118,7 +118,7 @@
         console.log("Encoded JWT ID token: " + response.credential);
   
         // Send the token to your server for verification
-        fetch('/api/auth/google', {
+        fetch('/api/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id_token: response.credential })
