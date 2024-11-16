@@ -15,7 +15,7 @@ const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_U
  */
 function getAuthUrl() {
   const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline', // Request a refresh token
+    access_type: 'offline', // Request a refresh token for later use
     scope: ['https://www.googleapis.com/auth/gmail.send'], // Permission to send emails
   });
   return authUrl;
@@ -27,12 +27,13 @@ function getAuthUrl() {
  */
 async function getTokens(code) {
   try {
+    // Get tokens from Google API using the authorization code
     const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
+    oauth2Client.setCredentials(tokens); // Set the credentials on the OAuth2 client
     return tokens;
   } catch (error) {
     console.error('Error getting tokens:', error);
-    throw error;
+    throw error; // Re-throw the error for better handling higher up
   }
 }
 
@@ -44,8 +45,9 @@ async function getTokens(code) {
  * @param {string} body - Email body
  */
 async function sendEmail(auth, to, subject, body) {
-  const gmail = google.gmail({ version: 'v1', auth });
+  const gmail = google.gmail({ version: 'v1', auth }); // Initialize Gmail API with OAuth2 client
 
+  // Construct the email content
   const email = [
     `To: ${to}`,
     `Subject: ${subject}`,
@@ -54,22 +56,24 @@ async function sendEmail(auth, to, subject, body) {
     body,
   ].join('\n');
 
+  // Encode the email as base64 URL-safe
   const raw = Buffer.from(email)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, ''); // URL-safe base64 encode
+    .toString('base64') // Standard base64 encode
+    .replace(/\+/g, '-') // Base64 to base64url
+    .replace(/\//g, '_') // Base64 to base64url
+    .replace(/=+$/, ''); // Remove trailing equal signs
 
   try {
+    // Send the email via Gmail API
     const result = await gmail.users.messages.send({
-      userId: 'me',
+      userId: 'me', // 'me' refers to the authenticated user
       requestBody: { raw },
     });
     console.log('Email sent:', result.data);
-    return result.data;
+    return result.data; // Return the response from Gmail API
   } catch (error) {
     console.error('Error sending email:', error);
-    throw error;
+    throw error; // Re-throw the error for better handling higher up
   }
 }
 
