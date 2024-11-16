@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restaurant Feedback Form</title>
@@ -12,28 +13,37 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      background: #ffebcd;
-      color: #333;
+      background: #2c3e50;
+      color: #f2f2f2;
       overflow: hidden;
       position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     h1 {
       text-align: center;
-      font-size: 2.5rem;
+      font-size: 3rem;
       margin-top: 30px;
-      color: #d74b4b;
+      color: #e74c3c;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.8);
+      animation: glitter 1s infinite alternate;
     }
 
     h2 {
       text-align: center;
       font-size: 1.5rem;
-      color: #3b3b3b;
+      color: #dcdcdc;
+      margin-bottom: 20px;
+      animation: glitter 1s infinite alternate;
     }
 
     p {
       text-align: center;
-      color: #777;
+      color: #bbb;
+      animation: glitter 1s infinite alternate;
     }
 
     .feedback-form-container {
@@ -42,13 +52,14 @@
       align-items: center;
       justify-content: center;
       margin: 20px;
-      background-color: white;
+      background-color: #34495e;
       padding: 40px;
       border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
       width: 80%;
       max-width: 600px;
       position: relative;
+      animation: fadeIn 2s ease-out;
     }
 
     form {
@@ -60,31 +71,34 @@
       padding: 12px;
       margin: 10px 0;
       border-radius: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #34495e;
       font-size: 1rem;
       box-sizing: border-box;
-      background: #f9f9f9;
+      background: #34495e;
+      color: #f2f2f2;
+      transition: border 0.3s ease;
     }
 
     .form-field:focus {
-      border-color: #d74b4b;
+      border-color: #e74c3c;
       outline: none;
     }
 
     .form-button {
       width: 100%;
       padding: 12px;
-      background-color: #d74b4b;
+      background-color: #e74c3c;
       color: white;
       font-size: 1.2rem;
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease;
     }
 
     .form-button:hover {
-      background-color: #e74c3c;
+      background-color: #c0392b;
+      transform: scale(1.05);
     }
 
     .form-button:disabled {
@@ -107,10 +121,87 @@
       margin-top: 10px;
       display: none;
     }
+
+    /* Glitter and falling animation */
+    @keyframes glitter {
+      0% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.7);
+      }
+      100% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 1), 0 0 60px rgba(255, 255, 255, 1);
+      }
+    }
+
+    @keyframes fall {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(100vw, 100vh);
+      }
+    }
+
+    /* Class for glittering particles */
+    .falling {
+      position: absolute;
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.8);
+      animation: fall 2s linear infinite, glitter 1.5s infinite alternate;
+      z-index: -1;
+      opacity: 0;
+      animation-duration: 1s;
+      animation-timing-function: ease-in-out;
+      pointer-events: none;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.7);
+    }
+
+    /* Randomize falling effect */
+    .falling:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .falling:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .falling:nth-child(3) {
+      animation-delay: 1s;
+    }
+
+    /* ReCAPTCHA styling */
+    .g-recaptcha {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      background-color: #34495e;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    /* Fade-in effect */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- Glittering Falling Effect -->
+  <div class="falling" style="left: 10%; font-size: 3rem;">✨</div>
+  <div class="falling" style="left: 50%; font-size: 3rem;">🌟</div>
+  <div class="falling" style="left: 80%; font-size: 2rem;">💫</div>
+  <div class="falling" style="top: 20%; left: 25%; font-size: 3rem;">🎉</div>
+  <div class="falling" style="top: 40%; left: 70%; font-size: 2rem;">🍽️</div>
+  <div class="falling" style="top: 60%; left: 15%; font-size: 3rem;">🍕</div>
+  <div class="falling" style="top: 80%; left: 50%; font-size: 2rem;">🍴</div>
 
   <div class="feedback-form-container">
     <h1>Restaurant Feedback</h1>
@@ -135,6 +226,7 @@
         placeholder="Tell us about your experience (required)" 
         required>
       </textarea>
+      <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
       <button type="submit" class="form-button">Submit Feedback</button>
     </form>
 
