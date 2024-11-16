@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
-const { googleAuth } = require('google-auth-library');
 
 // Set up Google Sheets API
 const sheets = google.sheets('v4');
