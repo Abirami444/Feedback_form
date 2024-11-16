@@ -114,35 +114,36 @@
   
     // Function to handle the response from Google Sign-In
     function handleCredentialResponse(response) {
-  if (response.credential) {
-    console.log("Encoded JWT ID token: " + response.credential);
-
-    // Send the token to your server
-    fetch('/api/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id_token: response.credential })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        // Redirect to feedback-form with email passed as a query parameter
-        const email = encodeURIComponent(data.email);
-        window.location.href = `/feedback-form?email=${email}`;
+      if (response.credential) {
+        console.log("Encoded JWT ID token: " + response.credential);
+  
+        // Send the token to your server for verification
+        fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_token: response.credential })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Assuming the server sends the user's email in the response data
+            const email = encodeURIComponent(data.email);
+  
+            // Redirect to the feedback-form.html page with the email query parameter
+            window.location.href = `/feedback-form.html?email=${email}`;
+          } else {
+            alert('Google sign-in failed');
+          }
+        })
+        .catch(error => {
+          console.error("Google sign-in error:", error);
+          alert('There was an error with Google sign-in');
+        });
       } else {
-        alert('Google sign-in failed');
+        console.error("Google sign-in response missing credential");
+        alert("Sign-in failed. Please try again.");
       }
-    })
-    .catch(error => {
-      console.error("Google sign-in error:", error);
-      alert('There was an error with Google sign-in');
-    });
-  } else {
-    console.error("Google sign-in response missing credential");
-    alert("Sign-in failed. Please try again.");
-  }
-}
-
+    }
   </script>
   
   
