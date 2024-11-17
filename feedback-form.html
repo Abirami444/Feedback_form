@@ -279,7 +279,7 @@
         const iframe = recaptchaDiv.querySelector('iframe');
         if (iframe) {
           // Set aria-hidden="false" to make reCAPTCHA accessible
-          iframe.setAttribute('aria-hidden', 'false');
+          iframe.removeAttribute('aria-hidden');
         }
       }
 
