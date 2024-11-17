@@ -15,12 +15,13 @@
       padding: 0;
       background: #2c3e50;
       color: #f2f2f2;
-      overflow: hidden;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: scroll; /* Allow scrolling */
     }
 
     h1 {
@@ -104,11 +105,6 @@
       transform: scale(1.05);
     }
 
-    .form-button:disabled {
-      background-color: #aaa;
-      cursor: not-allowed;
-    }
-
     .thank-you-message {
       text-align: center;
       color: #28a745;
@@ -126,6 +122,20 @@
       display: none;
     }
 
+    /* Additional styling for labels and options */
+    label {
+      font-size: 1rem;
+      color: #dcdcdc;
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    .horizontal-options {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
     /* Glitter and falling animation */
     @keyframes glitter {
       0% {
@@ -134,66 +144,6 @@
       100% {
         text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 1), 0 0 60px rgba(255, 255, 255, 1);
       }
-    }
-
-    @keyframes fall {
-      0% {
-        opacity: 0;
-        transform: translate(0, 0);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(100vw, 100vh);
-      }
-    }
-
-    /* Class for glittering particles */
-    .falling {
-      position: absolute;
-      font-size: 2rem;
-      color: rgba(255, 255, 255, 0.8);
-      animation: fall 2s linear infinite, glitter 1.5s infinite alternate, zoomIn 3s ease-out;
-      z-index: -1;
-      opacity: 0;
-      animation-duration: 2s;
-      animation-timing-function: ease-in-out;
-      pointer-events: none;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.7);
-    }
-
-    /* Randomize falling effect */
-    .falling:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .falling:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-
-    .falling:nth-child(3) {
-      animation-delay: 1s;
-    }
-
-    .falling:nth-child(4) {
-      animation-delay: 1.5s;
-    }
-
-    .falling:nth-child(5) {
-      animation-delay: 2s;
-    }
-
-    .falling:nth-child(6) {
-      animation-delay: 2.5s;
-    }
-
-    /* ReCAPTCHA styling */
-    .g-recaptcha {
-      margin: 20px 0;
-      display: flex;
-      justify-content: center;
-      background-color: #34495e;
-      border-radius: 10px;
-      padding: 10px;
     }
 
     /* Fade-in effect */
@@ -216,49 +166,128 @@
         opacity: 1;
       }
     }
+
+    /* Falling effect for snowflakes */
+    @keyframes snowflakes {
+      0% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      background-color: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: snowflakes 5s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Randomize the falling speed and position of each snowflake */
+    .snowflake:nth-child(1) { left: 10%; animation-duration: 4s; animation-delay: 0s; }
+    .snowflake:nth-child(2) { left: 20%; animation-duration: 6s; animation-delay: 1s; }
+    .snowflake:nth-child(3) { left: 30%; animation-duration: 5s; animation-delay: 2s; }
+    .snowflake:nth-child(4) { left: 40%; animation-duration: 4s; animation-delay: 3s; }
+    .snowflake:nth-child(5) { left: 50%; animation-duration: 7s; animation-delay: 1.5s; }
+    .snowflake:nth-child(6) { left: 60%; animation-duration: 5s; animation-delay: 2.5s; }
+    .snowflake:nth-child(7) { left: 70%; animation-duration: 6s; animation-delay: 0.5s; }
+    .snowflake:nth-child(8) { left: 80%; animation-duration: 4s; animation-delay: 4s; }
+    .snowflake:nth-child(9) { left: 90%; animation-duration: 5s; animation-delay: 3s; }
+    .snowflake:nth-child(10) { left: 15%; animation-duration: 4s; animation-delay: 2s; }
+    .snowflake:nth-child(11) { left: 25%; animation-duration: 5s; animation-delay: 0.5s; }
+    .snowflake:nth-child(12) { left: 35%; animation-duration: 6s; animation-delay: 1s; }
+    .snowflake:nth-child(13) { left: 45%; animation-duration: 4s; animation-delay: 2.5s; }
+    .snowflake:nth-child(14) { left: 55%; animation-duration: 6s; animation-delay: 3s; }
+    .snowflake:nth-child(15) { left: 65%; animation-duration: 5s; animation-delay: 1.5s; }
+
   </style>
 </head>
 
 <body>
+  <!-- Falling snowflakes -->
+  <div class="snowflakes">
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+    <div class="snowflake"></div>
+  </div>
 
-  <!-- Glittering Falling Effect -->
-  <div class="falling" style="left: 10%; font-size: 3rem;">✨</div>
-  <div class="falling" style="left: 50%; font-size: 3rem;">🌟</div>
-  <div class="falling" style="left: 80%; font-size: 2rem;">💫</div>
-  <div class="falling" style="top: 20%; left: 25%; font-size: 3rem;">🎉</div>
-  <div class="falling" style="top: 40%; left: 70%; font-size: 2rem;">🍽️</div>
-  <div class="falling" style="top: 60%; left: 15%; font-size: 3rem;">🍕</div>
-  <div class="falling" style="top: 80%; left: 50%; font-size: 2rem;">🍴</div>
+  <h1>Restaurant Feedback Form</h1>
+  <h2>We value your feedback</h2>
+  <p>Let us know how we did, and help us improve our service!</p>
 
   <div class="feedback-form-container">
-    <h1>Restaurant Feedback</h1>
-    <h2>We value your opinion!</h2>
-    <p>Let us know about your experience.</p>
+    <form id="feedback-form">
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" class="form-field" placeholder="Enter your name" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email-field" class="form-field" placeholder="Enter your email" required>
+      
+      <label for="feedback">Feedback:</label>
+      <textarea name="message" id="feedback" class="form-field" placeholder="Your feedback here..." rows="4" required></textarea>
 
-    <!-- Feedback Form -->
-    <form id="feedback-form" method="POST">
-      <input 
-        type="email" 
-        id="email-field" 
-        name="email" 
-        class="form-field" 
-        readonly 
-        placeholder="Your email" 
-        required 
-      />
-      <textarea 
-        id="feedback-field" 
-        name="feedback" 
-        class="form-field" 
-        placeholder="Tell us about your experience (required)" 
-        required>
-      </textarea>
+      <label>Overall Rating:</label>
+      <div class="horizontal-options">
+        <label><input type="radio" name="overall-rating" value="1"> 1</label>
+        <label><input type="radio" name="overall-rating" value="2"> 2</label>
+        <label><input type="radio" name="overall-rating" value="3"> 3</label>
+        <label><input type="radio" name="overall-rating" value="4"> 4</label>
+        <label><input type="radio" name="overall-rating" value="5"> 5</label>
+      </div>
+
+      <label>Cleanliness:</label>
+      <div class="horizontal-options">
+        <label><input type="radio" name="cleanliness" value="1"> 1</label>
+        <label><input type="radio" name="cleanliness" value="2"> 2</label>
+        <label><input type="radio" name="cleanliness" value="3"> 3</label>
+        <label><input type="radio" name="cleanliness" value="4"> 4</label>
+        <label><input type="radio" name="cleanliness" value="5"> 5</label>
+      </div>
+
+      <label>Taste:</label>
+      <div class="horizontal-options">
+        <label><input type="radio" name="taste" value="1"> 1</label>
+        <label><input type="radio" name="taste" value="2"> 2</label>
+        <label><input type="radio" name="taste" value="3"> 3</label>
+        <label><input type="radio" name="taste" value="4"> 4</label>
+        <label><input type="radio" name="taste" value="5"> 5</label>
+      </div>
+
+      <label>Service:</label>
+      <div class="horizontal-options">
+        <label><input type="radio" name="service" value="1"> 1</label>
+        <label><input type="radio" name="service" value="2"> 2</label>
+        <label><input type="radio" name="service" value="3"> 3</label>
+        <label><input type="radio" name="service" value="4"> 4</label>
+        <label><input type="radio" name="service" value="5"> 5</label>
+      </div>
+
       <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
-      <button type="submit" class="form-button">Submit Feedback</button>
-    </form>
 
-    <p class="thank-you-message" id="thank-you-message">Thank you for your feedback!</p>
-    <p class="error-message" id="error-message">Something went wrong. Please try again.</p>
+      <button type="submit" class="form-button">Submit</button>
+    </form>
+    <div class="thank-you-message" id="thank-you-message">Thank you for your feedback!</div>
+    <div class="error-message" id="error-message">Please complete all fields and verify captcha.</div>
   </div>
 
   <script>
@@ -270,7 +299,7 @@
         document.getElementById('email-field').value = decodeURIComponent(email); // Populate the feedback form with the email
       }
     }
-
+  
     // Fixing the aria-hidden issue
     window.onload = function() {
       const recaptchaDiv = document.querySelector('.g-recaptcha');
@@ -282,33 +311,48 @@
           iframe.removeAttribute('aria-hidden');
         }
       }
-
+  
       // Populate the email field on page load
       getQueryParams();
     };
-
+  
     // Handle form submission
     document.getElementById("feedback-form").addEventListener("submit", function (e) {
       e.preventDefault(); // Prevent default form submission
-
+  
+      // Collect all the data from the form
+      const formData = new FormData(this);
       const feedbackData = {
         email: document.getElementById('email-field').value,
-        feedback: document.getElementById('feedback-field').value.trim()
+        name: formData.get('name'),
+        overallRating: formData.get('overall-rating'),
+        cleanlinessRating: formData.get('cleanliness'),
+        tasteRating: formData.get('taste'),
+        serviceRating: formData.get('service'),
+        message: formData.get('message'),
+        recaptchaResponse: grecaptcha.getResponse() // Get reCAPTCHA response
       };
-
-      // Validate input
-      if (!feedbackData.feedback) {
-        alert("Please provide your feedback.");
+  
+      // Validate the reCAPTCHA response
+      if (!feedbackData.recaptchaResponse) {
+        alert("Please complete the reCAPTCHA.");
         return;
       }
-
+  
+      // Validate required fields
+      if (!feedbackData.name || !feedbackData.overallRating || !feedbackData.cleanlinessRating || 
+          !feedbackData.tasteRating || !feedbackData.serviceRating || !feedbackData.message) {
+        alert("Please fill out all required fields.");
+        return;
+      }
+  
       const submitButton = document.querySelector('.form-button');
       const thankYouMessage = document.getElementById('thank-you-message');
       const errorMessage = document.getElementById('error-message');
-
+  
       submitButton.disabled = true; // Disable the button to prevent multiple submissions
       errorMessage.style.display = 'none'; // Hide error message
-
+  
       // Submit feedback to the backend
       fetch('/api/feedback', {
         method: 'POST',
@@ -339,6 +383,7 @@
       });
     });
   </script>
+
 </body>
 
 </html>
