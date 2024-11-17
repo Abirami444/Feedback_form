@@ -181,9 +181,6 @@
     </form>
   </div>
 
-  <!-- Include reCAPTCHA v2 (Checkbox) -->
-  <div class="g-recaptcha" data-sitekey="6LeUAKwUAAAAAD4veHzq_sG-RYPv_zVjjUKZ_Kw3" aria-label="reCAPTCHA Checkbox" id="recaptcha"></div>
-
   <script>
     // Function to initialize and handle Google Sign-In
     function handleGoogleSignIn() {
@@ -229,13 +226,7 @@
         alert("Sign-in failed. Please try again.");
       }
     }
-
-    // Fix reCAPTCHA Accessibility issue
-    document.getElementById('recaptcha').setAttribute('aria-hidden', 'false');
   </script>
-
-  <!-- Load reCAPTCHA API -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 
 </html>
