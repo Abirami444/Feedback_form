@@ -3,7 +3,7 @@
 
 <head>
   <script src="https://apis.google.com/js/platform.js" async defer></script><!-- Google Platform API -->
-   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restaurant Feedback Form</title>
@@ -121,6 +121,7 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .form-button:hover {
@@ -193,7 +194,7 @@
     <h2>We value your feedback!</h2>
     <p>Please rate us on the following:</p>
 
-      <form id="feedback-form" method="POST">
+    <form id="feedback-form" method="POST">
       <input 
         type="email" 
         id="email-field" 
@@ -218,22 +219,22 @@
       <div class="rating-group">
         <span class="rating-label">Service</span>
         <div class="rating-stars">
-          <input type="radio" name="service" id="service1" value="1"><label for="service1">★</label>
-          <input type="radio" name="service" id="service2" value="2"><label for="service2">★</label>
+          <input type="radio" name="service" id="service1" value="5"><label for="service1">★</label>
+          <input type="radio" name="service" id="service2" value="4"><label for="service2">★</label>
           <input type="radio" name="service" id="service3" value="3"><label for="service3">★</label>
-          <input type="radio" name="service" id="service4" value="4"><label for="service4">★</label>
-          <input type="radio" name="service" id="service5" value="5"><label for="service5">★</label>
+          <input type="radio" name="service" id="service4" value="2"><label for="service4">★</label>
+          <input type="radio" name="service" id="service5" value="1"><label for="service5">★</label>
         </div>
       </div>
 
       <div class="rating-group">
         <span class="rating-label">Ambiance</span>
         <div class="rating-stars">
-          <input type="radio" name="ambiance" id="ambiance1" value="1"><label for="ambiance1">★</label>
-          <input type="radio" name="ambiance" id="ambiance2" value="2"><label for="ambiance2">★</label>
+          <input type="radio" name="ambiance" id="ambiance1" value="5"><label for="ambiance1">★</label>
+          <input type="radio" name="ambiance" id="ambiance2" value="4"><label for="ambiance2">★</label>
           <input type="radio" name="ambiance" id="ambiance3" value="3"><label for="ambiance3">★</label>
-          <input type="radio" name="ambiance" id="ambiance4" value="4"><label for="ambiance4">★</label>
-          <input type="radio" name="ambiance" id="ambiance5" value="5"><label for="ambiance5">★</label>
+          <input type="radio" name="ambiance" id="ambiance4" value="2"><label for="ambiance4">★</label>
+          <input type="radio" name="ambiance" id="ambiance5" value="1"><label for="ambiance5">★</label>
         </div>
       </div>
 
@@ -252,7 +253,7 @@
     <p class="error-message" id="error-message">Something went wrong. Please try again.</p>
   </div>
 
- <script>
+  <script>
     // Function to get query parameters from the URL
     function getQueryParams() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -271,7 +272,7 @@
     }
 
     // Call startApp on page load
-  window.onload = function() {
+    window.onload = function() {
       const recaptchaDiv = document.querySelector('.g-recaptcha');
       if (recaptchaDiv) {
         // Check if the reCAPTCHA div exists
