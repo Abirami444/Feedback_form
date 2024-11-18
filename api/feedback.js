@@ -8,11 +8,14 @@ const spreadsheetId = '1D-DlKlmsARAAtdTj8wmM8_3rVltUJxQR6LMVZyVqeeM'; // Replace
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { email, feedback } = req.body;
+      const { email, food, service, ambiance, feedback } = req.body;
 
       // Validate input
-      if (!email || !feedback) {
-        return res.status(400).json({ success: false, message: 'Email and feedback are required.' });
+      if (!email || !food || !service || !ambiance || !feedback) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'All fields (email, ratings, and feedback) are required.' 
+        });
       }
 
       // Authenticate Google API using the service account
@@ -31,8 +34,8 @@ export default async function handler(req, res) {
       const timestamp = istDate.toISOString().replace('T', ' ').split('.')[0]; // Format as 'YYYY-MM-DD HH:mm:ss'
 
       // Write data to Google Sheets
-      const values = [[email, feedback, timestamp]]; // Email, Feedback, Timestamp
-      const range = 'Sheet1!A:C'; // Adjusted range for three columns: email, feedback, timestamp
+      const values = [[email, food, service, ambiance, feedback, timestamp]]; // New columns for ratings
+      const range = 'Sheet1!A:F'; // Updated range for six columns: email, food, service, ambiance, feedback, timestamp
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
@@ -55,7 +58,13 @@ export default async function handler(req, res) {
         from: process.env.EMAIL_USER,
         to: process.env.EMAIL_USER,
         subject: 'New Feedback Received',
-        text: `You have received new feedback from ${email}:\n\n${feedback}`,
+        text: `You have received new feedback:\n
+        Email: ${email}\n
+        Food Quality: ${food}/5\n
+        Service: ${service}/5\n
+        Ambiance: ${ambiance}/5\n
+        Feedback:\n${feedback}\n\n
+        Submitted on: ${timestamp}`,
       };
 
       // Email options for the user
@@ -63,7 +72,12 @@ export default async function handler(req, res) {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Thank You for Your Feedback',
-        text: `Dear ${email},\n\nThank you for your feedback:\n\n"${feedback}"\n\nWe appreciate your thoughts and will consider them to improve our service.`,
+        text: `Dear ${email},\n\nThank you for your feedback!\n\nHere are the details you submitted:\n
+        Food Quality: ${food}/5\n
+        Service: ${service}/5\n
+        Ambiance: ${ambiance}/5\n
+        Your Feedback: "${feedback}"\n\n
+        We appreciate your thoughts and will use them to improve our services.\n\nBest regards,\n[Your Restaurant Name]`,
       };
 
       // Send emails
