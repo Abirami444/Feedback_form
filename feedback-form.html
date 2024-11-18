@@ -13,10 +13,8 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      background: #2c3e50;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
       color: #f2f2f2;
-      overflow: hidden;
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,40 +24,28 @@
     h1 {
       text-align: center;
       font-size: 3rem;
-      margin-top: 30px;
       color: #e74c3c;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.8);
-      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 30px rgba(255, 255, 255, 0.6);
+      animation: glitter 1.5s infinite alternate;
     }
 
-    h2 {
+    h2, p {
       text-align: center;
-      font-size: 1.5rem;
       color: #dcdcdc;
-      margin-bottom: 20px;
-      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
-    }
-
-    p {
-      text-align: center;
-      color: #bbb;
-      animation: glitter 1s infinite alternate, zoomIn 1s ease-out;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .feedback-form-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      margin: 20px;
       background-color: #34495e;
       padding: 40px;
       border-radius: 15px;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-      width: 80%;
+      width: 90%;
       max-width: 600px;
-      position: relative;
-      animation: fadeIn 2s ease-out;
+      animation: zoomIn 1s ease-out;
     }
 
     form {
@@ -67,24 +53,55 @@
     }
 
     /* Input and Textarea Fields */
-    .form-field {
+    .form-field, .form-select {
       width: 100%;
       padding: 14px;
       margin: 10px 0;
       border-radius: 10px;
-      border: 1px solid #34495e;
+      border: none;
       font-size: 1rem;
-      box-sizing: border-box;
       background: linear-gradient(45deg, #8e44ad, #2980b9);
       color: #fff;
-      transition: border 0.3s ease, transform 0.3s ease;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
     }
 
-    .form-field:focus {
-      border-color: #e74c3c;
+    .form-field:focus, .form-select:focus {
       outline: none;
       transform: scale(1.05);
+    }
+
+    .rating-group {
+      display: flex;
+      flex-direction: column;
+      margin: 15px 0;
+    }
+
+    .rating-label {
+      margin-bottom: 5px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .rating-stars {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .rating-stars input[type="radio"] {
+      display: none;
+    }
+
+    .rating-stars label {
+      font-size: 2rem;
+      color: #bbb;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .rating-stars input[type="radio"]:checked ~ label,
+    .rating-stars input[type="radio"]:hover ~ label {
+      color: #e74c3c;
     }
 
     .form-button {
@@ -104,136 +121,51 @@
       transform: scale(1.05);
     }
 
-    .form-button:disabled {
-      background-color: #aaa;
-      cursor: not-allowed;
-    }
-
-    .thank-you-message {
-      text-align: center;
-      color: #28a745;
-      font-size: 1.5rem;
-      margin-top: 20px;
-      display: none;
-      animation: zoomIn 2s ease-out;
-    }
-
-    .error-message {
-      text-align: center;
-      color: #e74c3c;
-      font-size: 1rem;
-      margin-top: 10px;
-      display: none;
-    }
-
-    /* Glitter and falling animation */
-    @keyframes glitter {
-      0% {
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.7);
-      }
-      100% {
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 1), 0 0 60px rgba(255, 255, 255, 1);
-      }
-    }
-
-    @keyframes fall {
-      0% {
-        opacity: 0;
-        transform: translate(0, 0);
-      }
-      100% {
-        opacity: 1;
-        transform: translate(100vw, 100vh);
-      }
-    }
-
-    /* Class for glittering particles */
-    .falling {
-      position: absolute;
-      font-size: 2rem;
-      color: rgba(255, 255, 255, 0.8);
-      animation: fall 2s linear infinite, glitter 1.5s infinite alternate, zoomIn 3s ease-out;
-      z-index: -1;
-      opacity: 0;
-      animation-duration: 2s;
-      animation-timing-function: ease-in-out;
-      pointer-events: none;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.7);
-    }
-
-    /* Randomize falling effect */
-    .falling:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .falling:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-
-    .falling:nth-child(3) {
-      animation-delay: 1s;
-    }
-
-    .falling:nth-child(4) {
-      animation-delay: 1.5s;
-    }
-
-    .falling:nth-child(5) {
-      animation-delay: 2s;
-    }
-
-    .falling:nth-child(6) {
-      animation-delay: 2.5s;
-    }
-
-    /* ReCAPTCHA styling */
     .g-recaptcha {
       margin: 20px 0;
       display: flex;
       justify-content: center;
-      background-color: #34495e;
       border-radius: 10px;
-      padding: 10px;
     }
 
-    /* Fade-in effect */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
+    .thank-you-message, .error-message {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .thank-you-message {
+      color: #28a745;
+    }
+
+    .error-message {
+      color: #e74c3c;
+    }
+
+    @keyframes glitter {
+      0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+      100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
     }
 
     @keyframes zoomIn {
-      0% {
-        transform: scale(0);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Glittering Falling Effect -->
-  <div class="falling" style="left: 10%; font-size: 3rem;">✨</div>
-  <div class="falling" style="left: 50%; font-size: 3rem;">🌟</div>
-  <div class="falling" style="left: 80%; font-size: 2rem;">💫</div>
-  <div class="falling" style="top: 20%; left: 25%; font-size: 3rem;">🎉</div>
-  <div class="falling" style="top: 40%; left: 70%; font-size: 2rem;">🍽️</div>
-  <div class="falling" style="top: 60%; left: 15%; font-size: 3rem;">🍕</div>
-  <div class="falling" style="top: 80%; left: 50%; font-size: 2rem;">🍴</div>
-
   <div class="feedback-form-container">
     <h1>Restaurant Feedback</h1>
-    <h2>We value your opinion!</h2>
-    <p>Let us know about your experience.</p>
+    <h2>We value your feedback!</h2>
+    <p>Please rate us on the following:</p>
 
     <!-- Feedback Form -->
     <form id="feedback-form" method="POST">
@@ -242,16 +174,47 @@
         id="email-field" 
         name="email" 
         class="form-field" 
-        readonly 
-        placeholder="Your email" 
+        placeholder="Your Email (required)" 
         required 
       />
+      <div class="rating-group">
+        <span class="rating-label">Food Quality</span>
+        <div class="rating-stars">
+          <input type="radio" name="food" id="food1" value="1"><label for="food1">★</label>
+          <input type="radio" name="food" id="food2" value="2"><label for="food2">★</label>
+          <input type="radio" name="food" id="food3" value="3"><label for="food3">★</label>
+          <input type="radio" name="food" id="food4" value="4"><label for="food4">★</label>
+          <input type="radio" name="food" id="food5" value="5"><label for="food5">★</label>
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <span class="rating-label">Service</span>
+        <div class="rating-stars">
+          <input type="radio" name="service" id="service1" value="1"><label for="service1">★</label>
+          <input type="radio" name="service" id="service2" value="2"><label for="service2">★</label>
+          <input type="radio" name="service" id="service3" value="3"><label for="service3">★</label>
+          <input type="radio" name="service" id="service4" value="4"><label for="service4">★</label>
+          <input type="radio" name="service" id="service5" value="5"><label for="service5">★</label>
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <span class="rating-label">Ambiance</span>
+        <div class="rating-stars">
+          <input type="radio" name="ambiance" id="ambiance1" value="1"><label for="ambiance1">★</label>
+          <input type="radio" name="ambiance" id="ambiance2" value="2"><label for="ambiance2">★</label>
+          <input type="radio" name="ambiance" id="ambiance3" value="3"><label for="ambiance3">★</label>
+          <input type="radio" name="ambiance" id="ambiance4" value="4"><label for="ambiance4">★</label>
+          <input type="radio" name="ambiance" id="ambiance5" value="5"><label for="ambiance5">★</label>
+        </div>
+      </div>
+
       <textarea 
         id="feedback-field" 
         name="feedback" 
         class="form-field" 
-        placeholder="Tell us about your experience (required)" 
-        required>
+        placeholder="Additional Comments (optional)">
       </textarea>
       <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
       <button type="submit" class="form-button">Submit Feedback</button>
@@ -262,43 +225,20 @@
   </div>
 
   <script>
-    // Function to get query parameters from the URL
-    function getQueryParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('email');
-      if (email) {
-        document.getElementById('email-field').value = decodeURIComponent(email); // Populate the feedback form with the email
-      }
-    }
-
-    // Fixing the aria-hidden issue
-    window.onload = function() {
-      const recaptchaDiv = document.querySelector('.g-recaptcha');
-      if (recaptchaDiv) {
-        // Check if the reCAPTCHA div exists
-        const iframe = recaptchaDiv.querySelector('iframe');
-        if (iframe) {
-          // Set aria-hidden="false" to make reCAPTCHA accessible
-          iframe.removeAttribute('aria-hidden');
-        }
-      }
-
-      // Populate the email field on page load
-      getQueryParams();
-    };
-
-    // Handle form submission
     document.getElementById("feedback-form").addEventListener("submit", function (e) {
-      e.preventDefault(); // Prevent default form submission
+      e.preventDefault();
 
       const feedbackData = {
-        email: document.getElementById('email-field').value,
+        email: document.getElementById('email-field').value.trim(),
+        food: document.querySelector('input[name="food"]:checked')?.value || '',
+        service: document.querySelector('input[name="service"]:checked')?.value || '',
+        ambiance: document.querySelector('input[name="ambiance"]:checked')?.value || '',
         feedback: document.getElementById('feedback-field').value.trim()
       };
 
-      // Validate input
-      if (!feedbackData.feedback) {
-        alert("Please provide your feedback.");
+      // Validate ratings
+      if (!feedbackData.food || !feedbackData.service || !feedbackData.ambiance) {
+        alert("Please rate all categories.");
         return;
       }
 
@@ -306,10 +246,9 @@
       const thankYouMessage = document.getElementById('thank-you-message');
       const errorMessage = document.getElementById('error-message');
 
-      submitButton.disabled = true; // Disable the button to prevent multiple submissions
-      errorMessage.style.display = 'none'; // Hide error message
+      submitButton.disabled = true;
+      errorMessage.style.display = 'none';
 
-      // Submit feedback to the backend
       fetch('/api/feedback', {
         method: 'POST',
         headers: {
@@ -317,26 +256,24 @@
         },
         body: JSON.stringify(feedbackData)
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          thankYouMessage.style.display = 'block'; // Show thank-you message
-          thankYouMessage.classList.add('zoomIn');
-          setTimeout(() => {
-            window.location.href = '/'; // Redirect to home page or another page after success
-          }, 3000);
-        } else {
-          errorMessage.style.display = 'block'; // Show error message
-          alert(data.message || 'Something went wrong.');
-        }
-      })
-      .catch(error => {
-        console.error('Error submitting feedback:', error);
-        errorMessage.style.display = 'block'; // Show error message
-      })
-      .finally(() => {
-        submitButton.disabled = false; // Re-enable the button
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            thankYouMessage.style.display = 'block';
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 3000);
+          } else {
+            alert(data.message || 'Something went wrong.');
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting feedback:', error);
+          errorMessage.style.display = 'block';
+        })
+        .finally(() => {
+          submitButton.disabled = false;
+        });
     });
   </script>
 </body>
