@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script> <!-- Google Platform API -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Restaurant Feedback Form</title>
@@ -20,13 +20,13 @@
       align-items: center;
       height: 100%;
       min-height: 100vh;
-      overflow-y: auto; /* Enable scrolling */
+      overflow-y: auto;
     }
 
     h1 {
       text-align: center;
       font-size: 3rem;
-      color: #f39c12; /* Gold color */
+      color: #f39c12;
       text-shadow: 0 0 10px rgba(243, 156, 18, 0.7), 0 0 20px rgba(243, 156, 18, 0.5);
       animation: glow 1.5s infinite alternate;
     }
@@ -89,7 +89,7 @@
     .rating-stars {
       display: flex;
       justify-content: space-between;
-      flex-direction: row-reverse; /* This reverses the order of the stars */
+      flex-direction: row-reverse;
       position: relative;
     }
 
@@ -107,7 +107,7 @@
     .rating-stars input[type="radio"]:checked ~ label,
     .rating-stars label:hover,
     .rating-stars input[type="radio"]:hover ~ label {
-      color: #e74c3c; /* Red on hover or select */
+      color: #e74c3c;
     }
 
     .form-button {
@@ -187,11 +187,15 @@
 </head>
 
 <body>
-
   <div class="feedback-form-container">
     <h1>Restaurant Feedback</h1>
     <h2>We value your feedback!</h2>
     <p>Please rate us on the following:</p>
+
+    <!-- Google Sign-In Button -->
+    <div id="google-signin-button">
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    </div>
 
     <!-- Feedback Form -->
     <form id="feedback-form" method="POST">
@@ -203,6 +207,7 @@
         placeholder="Your Email (required)" 
         required 
       />
+
       <div class="rating-group">
         <span class="rating-label">Food Quality</span>
         <div class="rating-stars">
@@ -242,8 +247,8 @@
         class="form-field" 
         placeholder="Additional Comments (optional)">
       </textarea>
-      
-      <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+
+      <div class="g-recaptcha" data-sitekey="your-site-key-here"></div>
       <button type="submit" class="form-button">Submit Feedback</button>
     </form>
 
@@ -252,6 +257,25 @@
   </div>
 
   <script>
+    function onSignIn(googleUser) {
+      const profile = googleUser.getBasicProfile();
+      const email = profile.getEmail();
+
+      document.getElementById('email-field').value = email;
+
+      document.getElementById('google-signin-button').style.display = 'none';
+    }
+
+    function startApp() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+
+    window.onload = function() {
+      startApp();
+    }
+
     document.getElementById("feedback-form").addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -263,7 +287,6 @@
         feedback: document.getElementById('feedback-field').value.trim()
       };
 
-      // Validate ratings
       if (!feedbackData.food || !feedbackData.service || !feedbackData.ambiance) {
         alert("Please rate all categories.");
         return;
@@ -303,6 +326,6 @@
         });
     });
   </script>
-
 </body>
+
 </html>
