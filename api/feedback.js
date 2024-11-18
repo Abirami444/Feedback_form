@@ -24,8 +24,11 @@ export default async function handler(req, res) {
       const authClient = await auth.getClient();
       google.options({ auth: authClient });
 
-      // Get the current timestamp
-      const timestamp = new Date().toISOString();
+      // Get the current timestamp in IST
+      const now = new Date();
+      const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds
+      const istDate = new Date(now.getTime() + istOffset);
+      const timestamp = istDate.toISOString().replace('T', ' ').split('.')[0]; // Format as 'YYYY-MM-DD HH:mm:ss'
 
       // Write data to Google Sheets
       const values = [[email, feedback, timestamp]]; // Email, Feedback, Timestamp
