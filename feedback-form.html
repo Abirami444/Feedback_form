@@ -193,7 +193,7 @@
     <p>Please rate us on the following:</p>
 
     <!-- Google Sign-In Button -->
-    <div id="google-signin-button">
+    <div id="google-signin-button" style="display: none;">
       <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </div>
 
@@ -247,8 +247,8 @@
         class="form-field" 
         placeholder="Additional Comments (optional)">
       </textarea>
-
-      <div class="g-recaptcha" data-sitekey="your-site-key-here"></div>
+      
+      <div class="g-recaptcha" data-sitekey="6LegwHYqAAAAAInkzklpRSA3G_kEEYQwEMlXJTl_"></div>
       <button type="submit" class="form-button">Submit Feedback</button>
     </form>
 
@@ -257,21 +257,27 @@
   </div>
 
   <script>
+    // This function is called when the user successfully logs in using Google Sign-In
     function onSignIn(googleUser) {
+      // Get the Google profile object
       const profile = googleUser.getBasicProfile();
-      const email = profile.getEmail();
+      const email = profile.getEmail();  // Get the email address of the user
 
+      // Auto-fill the email field in the form
       document.getElementById('email-field').value = email;
 
+      // Optionally, you can hide the Google Sign-In button after successful login
       document.getElementById('google-signin-button').style.display = 'none';
     }
 
+    // Initialize Google Sign-In when the page loads
     function startApp() {
       gapi.load('auth2', function() {
         gapi.auth2.init();
       });
     }
 
+    // Call startApp on page load
     window.onload = function() {
       startApp();
     }
@@ -287,6 +293,7 @@
         feedback: document.getElementById('feedback-field').value.trim()
       };
 
+      // Validate ratings
       if (!feedbackData.food || !feedbackData.service || !feedbackData.ambiance) {
         alert("Please rate all categories.");
         return;
