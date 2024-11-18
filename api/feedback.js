@@ -24,9 +24,12 @@ export default async function handler(req, res) {
       const authClient = await auth.getClient();
       google.options({ auth: authClient });
 
+      // Get the current timestamp
+      const timestamp = new Date().toISOString();
+
       // Write data to Google Sheets
-      const values = [[email, feedback]]; // No timestamp
-      const range = 'Sheet1!A:B'; // Adjusted range for two columns: email and feedback
+      const values = [[email, feedback, timestamp]]; // Email, Feedback, Timestamp
+      const range = 'Sheet1!A:C'; // Adjusted range for three columns: email, feedback, timestamp
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
