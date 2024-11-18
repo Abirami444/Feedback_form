@@ -192,19 +192,14 @@
     <h2>We value your feedback!</h2>
     <p>Please rate us on the following:</p>
 
-    <!-- Google Sign-In Button -->
-    <div id="google-signin-button" style="display: none;">
-      <div class="g-signin2" data-onsuccess="onSignIn"></div>
-    </div>
-
-    <!-- Feedback Form -->
-    <form id="feedback-form" method="POST">
+      <form id="feedback-form" method="POST">
       <input 
         type="email" 
         id="email-field" 
         name="email" 
         class="form-field" 
-        placeholder="Your Email (required)" 
+        readonly 
+        placeholder="Your email" 
         required 
       />
 
@@ -256,19 +251,16 @@
     <p class="error-message" id="error-message">Something went wrong. Please try again.</p>
   </div>
 
-  <script>
-    // This function is called when the user successfully logs in using Google Sign-In
-    function onSignIn(googleUser) {
-      // Get the Google profile object
-      const profile = googleUser.getBasicProfile();
-      const email = profile.getEmail();  // Get the email address of the user
-
-      // Auto-fill the email field in the form
-      document.getElementById('email-field').value = email;
-
-      // Optionally, you can hide the Google Sign-In button after successful login
-      document.getElementById('google-signin-button').style.display = 'none';
+ <script>
+    // Function to get query parameters from the URL
+    function getQueryParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const email = urlParams.get('email');
+      if (email) {
+        document.getElementById('email-field').value = decodeURIComponent(email); // Populate the feedback form with the email
+      }
     }
+
 
     // Initialize Google Sign-In when the page loads
     function startApp() {
@@ -278,9 +270,20 @@
     }
 
     // Call startApp on page load
-    window.onload = function() {
-      startApp();
-    }
+  window.onload = function() {
+      const recaptchaDiv = document.querySelector('.g-recaptcha');
+      if (recaptchaDiv) {
+        // Check if the reCAPTCHA div exists
+        const iframe = recaptchaDiv.querySelector('iframe');
+        if (iframe) {
+          // Set aria-hidden="false" to make reCAPTCHA accessible
+          iframe.removeAttribute('aria-hidden');
+        }
+      }
+
+      // Populate the email field on page load
+      getQueryParams();
+    };
 
     document.getElementById("feedback-form").addEventListener("submit", function (e) {
       e.preventDefault();
